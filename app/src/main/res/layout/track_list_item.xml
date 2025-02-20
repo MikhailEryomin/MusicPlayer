@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    app:cardCornerRadius="16dp"
+    android:layout_height="60dp">
+
+    <LinearLayout
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#000000">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:padding="10dp"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/track_thumbnail"
+                android:layout_width="36dp"
+                android:layout_marginEnd="12dp"
+                android:layout_height="36dp"
+                android:src="@drawable/baseline_music_note_24" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/track_item_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:text="Расподия конца светаРасподия конца светаРасподия конца света"
+                    android:textAlignment="textStart"
+                    android:textColor="#dedede"
+                    app:layout_constraintStart_toEndOf="@+id/track_thumbnail"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:textColor="#dedede"
+                    android:id="@+id/track_item_artist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="GONE.Fludd"
+                    android:textAlignment="center"
+                    android:textSize="12dp"
+                    app:layout_constraintStart_toStartOf="@+id/track_item_title"
+                    app:layout_constraintTop_toBottomOf="@+id/track_item_title" />
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/track_item_duration"
+                android:layout_width="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textColor="#dedede"
+                android:text="02:17"
+                android:textAlignment="center"
+                android:textSize="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </LinearLayout>
+
+
+
+
+
+
+
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+
+
+
+
+
+
+
+
+</LinearLayout>
