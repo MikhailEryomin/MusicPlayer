@@ -1,41 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="#000000"
     android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView2"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/main_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="125dp"
-        android:backgroundTint="#000000"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_gravity="bottom"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/track_list_item"
-            android:id="@+id/track_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#000000" />
-
-
-
-    </androidx.cardview.widget.CardView>
+        android:layout_marginBottom="125dp" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/track_view_parent"
@@ -46,7 +22,7 @@
         android:backgroundTint="@color/lighter_gray"
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_drawer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -159,6 +135,38 @@
 
     </androidx.cardview.widget.CardView>
 
+    <LinearLayout
+        android:id="@+id/bottom_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/track_list_button"
+            android:layout_width="0dp"
+            tools:enabled="false"
+            android:backgroundTint="@color/black"
+            android:textColor="@color/button_color"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Main"
+            android:layout_marginLeft="12dp" />
+
+        <Button
+            android:id="@+id/collection_button"
+            android:layout_width="0dp"
+            tools:enabled="true"
+            android:backgroundTint="@color/black"
+            android:textColor="@color/button_color"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginRight="12dp"
+            android:text="Collection" />
+
+    </LinearLayout>
 
 
 

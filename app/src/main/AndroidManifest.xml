@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MusicPlayer"
         tools:targetApi="31" >
-        <activity android:name="com.eremix.musicplayer.presentation.TrackListActivity"
+        <activity android:name="com.eremix.musicplayer.presentation.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
