@@ -1,4 +1,8 @@
 package com.eremix.musicplayer.domain
 
-class GetTrackListUseCase {
+class GetTrackListUseCase(private val repository: TrackListRepository) {
+
+    operator fun invoke(): List<Track> {
+        return repository.getTrackList()
+    }
 }

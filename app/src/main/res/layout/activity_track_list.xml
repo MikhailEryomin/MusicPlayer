@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="#000000"
     android:orientation="vertical">
 
@@ -25,6 +26,8 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_gravity="bottom"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/track_list_item"
             android:id="@+id/track_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -35,7 +38,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+        android:id="@+id/track_view_parent"
         android:layout_width="match_parent"
         android:layout_height="110dp"
         android:layout_alignParentBottom="true"
