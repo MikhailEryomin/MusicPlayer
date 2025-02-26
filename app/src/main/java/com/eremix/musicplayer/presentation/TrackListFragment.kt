@@ -46,6 +46,7 @@ class TrackListFragment: Fragment() {
         viewModel.trackList.observe(viewLifecycleOwner) {
             adapter.trackList = it
         }
+
     }
 
     override fun onDestroyView() {

@@ -11,7 +11,7 @@ import com.eremix.musicplayer.domain.Track
 
 class TrackListAdapter(private val context: Context) : RecyclerView.Adapter<TrackListViewHolder>() {
 
-    var onTrackItemClickListener: ((Track) -> Unit)? = null
+    var onTrackItemClickListener: ((Int) -> Unit)? = null
     private var selectedPosition = RecyclerView.NO_POSITION
 
     var trackList: List<Track> = listOf()
@@ -35,10 +35,16 @@ class TrackListAdapter(private val context: Context) : RecyclerView.Adapter<Trac
         //holder.itemView.setBackgroundColor(context.getColor(R.color.black))
         val binding = holder.binding
         val trackItem = trackList[position]
-        //binding.trackThumbnail.setImageBitmap()
+
         binding.trackItemTitle.text = trackItem.title
         binding.trackItemArtist.text = trackItem.artist
         binding.trackItemDuration.text = trackItem.durationString
+
+        if (trackItem.thumbnailBitmap != null) {
+            binding.trackThumbnail.setImageBitmap(trackItem.thumbnailBitmap)
+        } else {
+            binding.trackThumbnail.setImageResource(R.drawable.baseline_music_note_24)
+        }
 
         if (position == selectedPosition) {
             binding.trackBackground.setBackgroundColor(context.getColor(R.color.gray))
@@ -47,7 +53,7 @@ class TrackListAdapter(private val context: Context) : RecyclerView.Adapter<Trac
         }
 
         holder.itemView.setOnClickListener {
-            onTrackItemClickListener?.invoke(trackItem)
+            onTrackItemClickListener?.invoke(position)
             val previousPosition = selectedPosition
             selectedPosition = position
 

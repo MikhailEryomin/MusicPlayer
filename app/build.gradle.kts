@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.room.runtime)
+    implementation(libs.androidx.lifecycle)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
