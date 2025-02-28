@@ -1,4 +1,4 @@
-package com.eremix.musicplayer.presentation
+package com.eremix.musicplayer.presentation.main
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -43,7 +43,7 @@ class TrackListFragment: Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.trackList.observe(viewLifecycleOwner) {
+        viewModel.trackListLD.observe(viewLifecycleOwner) {
             adapter.trackList = it
         }
 

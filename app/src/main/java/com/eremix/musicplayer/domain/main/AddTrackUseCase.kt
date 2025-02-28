@@ -1,4 +1,4 @@
-package com.eremix.musicplayer.domain
+package com.eremix.musicplayer.domain.main
 
 class AddTrackUseCase(private val repository: TrackListRepository) {
 

@@ -1,4 +1,4 @@
-package com.eremix.musicplayer.domain
+package com.eremix.musicplayer.domain.main
 
 import android.graphics.Bitmap
 import android.net.Uri

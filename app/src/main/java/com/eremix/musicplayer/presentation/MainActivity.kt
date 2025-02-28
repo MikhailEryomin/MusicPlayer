@@ -14,6 +14,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.eremix.musicplayer.R
 import com.eremix.musicplayer.databinding.ActivityMainBinding
+import com.eremix.musicplayer.presentation.collection.CollectionFragment
+import com.eremix.musicplayer.presentation.main.MainViewModel
+import com.eremix.musicplayer.presentation.main.TrackListFragment
+import com.eremix.musicplayer.presentation.main.TrackPlayerFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,6 +28,8 @@ class MainActivity : AppCompatActivity() {
     private val viewModel by lazy {
         ViewModelProvider(this)[MainViewModel::class.java]
     }
+
+    private var isTrackListNotEmpty = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,7 +86,7 @@ class MainActivity : AppCompatActivity() {
     ) {
         if (requestCode == REQUEST_CODE && grantResults.isNotEmpty()) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                viewModel.loadTrackList()
+                viewModel.setupTrackList()
             } else {
                 Log.d("MainActivity", "Permission Denied")
                 Toast.makeText(
@@ -97,6 +103,14 @@ class MainActivity : AppCompatActivity() {
             binding.trackViewParent.visibility = View.VISIBLE
         } else {
             binding.trackViewParent.visibility = View.GONE
+        }
+    }
+
+    private fun changeBottomNavigationVisibility(isVisible: Boolean) {
+        if (isVisible) {
+            binding.bottomDrawer.visibility = View.VISIBLE
+        } else {
+            binding.bottomDrawer.visibility = View.GONE
         }
     }
 
@@ -124,7 +138,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.loadTrackList()
+        //viewModel.loadTrackList()
     }
 
     private fun observeViewModel() {
@@ -140,6 +154,9 @@ class MainActivity : AppCompatActivity() {
             binding.trackSeekBar.max = it.durationInSeconds
             binding.trackDuration.text = it.durationString
 
+        }
+        viewModel.listIsNotEmpty.observe(this) {
+            isTrackListNotEmpty = it
         }
         viewModel.isPlaying.observe(this) {
             if (it) {
@@ -158,8 +175,11 @@ class MainActivity : AppCompatActivity() {
             when (it) {
                 ScreenState.TRACK_LIST -> {
                     launchFragment(TrackListFragment())
-                    changeMiniPlayerVisibility(true)
-                    binding.bottomDrawer.visibility = View.VISIBLE
+                    changeMiniPlayerVisibility(false)
+                    if (isTrackListNotEmpty) {
+                        changeMiniPlayerVisibility(true)
+                    }
+                    changeBottomNavigationVisibility(true)
                     binding.trackListButton.isEnabled = false
                     binding.collectionButton.isEnabled = true
                 }
@@ -167,13 +187,16 @@ class MainActivity : AppCompatActivity() {
                 ScreenState.PLAYER -> {
                     launchFragment(TrackPlayerFragment())
                     changeMiniPlayerVisibility(false)
-                    binding.bottomDrawer.visibility = View.GONE
+                    changeBottomNavigationVisibility(false)
                 }
 
                 ScreenState.COLLECTION -> {
                     launchFragment(CollectionFragment())
-                    changeMiniPlayerVisibility(true)
-                    binding.bottomDrawer.visibility = View.VISIBLE
+                    changeMiniPlayerVisibility(false)
+                    if (isTrackListNotEmpty) {
+                        changeMiniPlayerVisibility(true)
+                    }
+                    changeBottomNavigationVisibility(true)
                     binding.trackListButton.isEnabled = true
                     binding.collectionButton.isEnabled = false
                 }

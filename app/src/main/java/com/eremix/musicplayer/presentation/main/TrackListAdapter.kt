@@ -1,13 +1,12 @@
-package com.eremix.musicplayer.presentation
+package com.eremix.musicplayer.presentation.main
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.eremix.musicplayer.R
 import com.eremix.musicplayer.databinding.TrackListItemBinding
-import com.eremix.musicplayer.domain.Track
+import com.eremix.musicplayer.domain.main.Track
 
 class TrackListAdapter(private val context: Context) : RecyclerView.Adapter<TrackListViewHolder>() {
 
@@ -23,7 +22,6 @@ class TrackListAdapter(private val context: Context) : RecyclerView.Adapter<Trac
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackListViewHolder {
         val binding = TrackListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        Log.d("Adapter","List item created")
         return TrackListViewHolder(binding)
     }
 
@@ -54,15 +52,21 @@ class TrackListAdapter(private val context: Context) : RecyclerView.Adapter<Trac
 
         holder.itemView.setOnClickListener {
             onTrackItemClickListener?.invoke(position)
-            val previousPosition = selectedPosition
-            selectedPosition = position
-
-            // Обновляем только изменившиеся элементы
-            notifyItemChanged(previousPosition) // Сбрасываем предыдущий
-            notifyItemChanged(selectedPosition) // Выделяем новый
+            setPosition(position)
         }
     }
+
+    fun setPosition(position: Int) {
+        val previousPosition = selectedPosition
+        selectedPosition = position
+
+        // Обновляем только изменившиеся элементы
+        notifyItemChanged(previousPosition) // Сбрасываем предыдущий
+        notifyItemChanged(selectedPosition) // Выделяем новый
+    }
 }
+
+
 
 class TrackListViewHolder(val binding: TrackListItemBinding) :
     RecyclerView.ViewHolder(binding.root)

@@ -1,4 +1,4 @@
-package com.eremix.musicplayer.data
+package com.eremix.musicplayer.data.main
 
 class TrackMapper {
 

@@ -1,4 +1,4 @@
-package com.eremix.musicplayer.data
+package com.eremix.musicplayer.data.main
 
 import android.content.ContentResolver
 import android.content.Context
@@ -7,8 +7,8 @@ import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.provider.MediaStore
-import com.eremix.musicplayer.domain.Track
-import com.eremix.musicplayer.domain.TrackListRepository
+import com.eremix.musicplayer.domain.main.Track
+import com.eremix.musicplayer.domain.main.TrackListRepository
 
 object TrackListRepositoryImpl: TrackListRepository {
 

@@ -1,4 +1,4 @@
-package com.eremix.musicplayer.presentation
+package com.eremix.musicplayer.presentation.main
 
 import android.os.Bundle
 import android.view.LayoutInflater

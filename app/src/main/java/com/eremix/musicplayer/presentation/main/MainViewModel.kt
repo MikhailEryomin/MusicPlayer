@@ -1,22 +1,20 @@
-package com.eremix.musicplayer.presentation
+package com.eremix.musicplayer.presentation.main
 
 import android.app.Application
 import android.media.MediaPlayer
-import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
-import com.eremix.musicplayer.data.TrackListRepositoryImpl
-import com.eremix.musicplayer.data.TrackMapper
-import com.eremix.musicplayer.domain.GetTrackListUseCase
-import com.eremix.musicplayer.domain.Track
+import com.eremix.musicplayer.data.main.TrackListRepositoryImpl
+import com.eremix.musicplayer.data.main.TrackMapper
+import com.eremix.musicplayer.domain.main.GetTrackListUseCase
+import com.eremix.musicplayer.domain.main.Track
+import com.eremix.musicplayer.presentation.ScreenState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.Stack
 
@@ -28,9 +26,11 @@ class MainViewModel(private val application: Application): AndroidViewModel(appl
 
     val adapter = TrackListAdapter(application)
 
-    private val _trackList = MutableLiveData<List<Track>>()
-    val trackList: LiveData<List<Track>>
-        get() = _trackList
+    private val _trackListLD = MutableLiveData<List<Track>>()
+    val trackListLD: LiveData<List<Track>>
+        get() = _trackListLD
+    private val trackList: List<Track>
+        get() = trackListLD.value ?: listOf()
 
     private val _currentTrack = MutableLiveData<Track>()
     val currentTrack: LiveData<Track>
@@ -55,6 +55,10 @@ class MainViewModel(private val application: Application): AndroidViewModel(appl
         get() = _screenState
     private val screenStateStack = Stack<ScreenState>()
 
+    private val _listIsNotEmpty = MutableLiveData<Boolean>()
+    val listIsNotEmpty: LiveData<Boolean>
+        get() = _listIsNotEmpty
+
     private val getTrackListUseCase = GetTrackListUseCase(repository)
     private var mediaPlayer: MediaPlayer? = null
 
@@ -65,11 +69,13 @@ class MainViewModel(private val application: Application): AndroidViewModel(appl
     private var currentTrackListLength = 0
 
     init {
-        //loading tracks from repository
-        loadTrackList()
-        //trackList item listener
+        setupTrackList()
+        setupTrackListClickListener()
+    }
+
+    private fun setupTrackListClickListener() {
         adapter.onTrackItemClickListener = { position ->
-            val track = trackList.value!![position]
+            val track = trackListLD.value!![position]
             currentTrackPosition = position
             stopPlayer()
             mediaPlayer = setupPlayer(track)
@@ -77,9 +83,21 @@ class MainViewModel(private val application: Application): AndroidViewModel(appl
         }
     }
 
-    fun loadTrackList() {
-        _trackList.value = getTrackListUseCase.invoke()
-        currentTrackListLength = _trackList.value!!.size
+    private fun initPlayer() {
+        if (trackList.isNotEmpty()) {
+            _listIsNotEmpty.value = true
+            val firstTrack = trackList[currentTrackPosition]
+            mediaPlayer = setupPlayer(firstTrack)
+        } else {
+            //there are not tracks in the list
+            _listIsNotEmpty.value = false
+        }
+    }
+
+    fun setupTrackList() {
+        _trackListLD.value = getTrackListUseCase.invoke()
+        currentTrackListLength = _trackListLD.value!!.size
+        initPlayer()
     }
 
     fun navigateTo(screen: ScreenState) {
@@ -98,14 +116,13 @@ class MainViewModel(private val application: Application): AndroidViewModel(appl
         return false
     }
 
-    /*
-        PLAYER
+    /* PLAYER
      */
     private fun setupPlayer(track: Track): MediaPlayer? {
         val mp = MediaPlayer()
-
         try {
             _currentTrack.value = track
+            adapter.setPosition(currentTrackPosition)
             mp.setDataSource(application.applicationContext, track.uri)
             mp.prepare()
             return mp
@@ -118,10 +135,32 @@ class MainViewModel(private val application: Application): AndroidViewModel(appl
     private fun startPlayer() {
         if (mediaPlayer == null) return
         if (isPlaying.value == false) {
-            mediaPlayer!!.start()
-            startTimer()
+            mediaPlayer?.start()
             _isPlaying.value = true
+
+            startTimer()
         }
+    }
+
+    fun pausePlayer() {
+        if (mediaPlayer == null) return
+        if (isPlaying.value == false) {
+            startPlayer()
+        } else {
+            _isPlaying.value = false
+            mediaPlayer?.pause()
+            stopTimer()
+        }
+    }
+
+    private fun stopPlayer() {
+        if (mediaPlayer == null) return
+        mediaPlayer?.stop()
+        mediaPlayer?.release()
+        mediaPlayer = null
+        _isPlaying.value = false
+        stopTimer()
+        resetTimer()
     }
 
     private fun startTimer() {
@@ -133,6 +172,11 @@ class MainViewModel(private val application: Application): AndroidViewModel(appl
             }
             playNext()
         }
+    }
+
+    private fun stopTimer() {
+        jobTimer?.cancel()
+        jobTimer = null
     }
 
     private fun resetTimer() {
@@ -148,41 +192,13 @@ class MainViewModel(private val application: Application): AndroidViewModel(appl
         }
     }
 
-    private fun stopTimer() {
-        jobTimer?.cancel()
-        jobTimer = null
-    }
-
-    fun pausePlayer() {
-        if (mediaPlayer == null) return
-        if (isPlaying.value == false) {
-            _isPlaying.value = true
-            mediaPlayer!!.start()
-            startTimer()
-        } else {
-            _isPlaying.value = false
-            mediaPlayer!!.pause()
-            stopTimer()
-        }
-    }
-
-    private fun stopPlayer() {
-        if (mediaPlayer == null) return
-        mediaPlayer!!.stop()
-        mediaPlayer!!.release()
-        mediaPlayer = null
-        _isPlaying.value = false
-        stopTimer()
-        resetTimer()
-    }
-
     fun playNext() {
         stopPlayer()
         currentTrackPosition++
         if (currentTrackPosition == currentTrackListLength) {
             currentTrackPosition = 0
         }
-        val nextTrack = trackList.value!![currentTrackPosition]
+        val nextTrack = trackListLD.value!![currentTrackPosition]
         mediaPlayer = setupPlayer(nextTrack)
         startPlayer()
     }
@@ -193,7 +209,7 @@ class MainViewModel(private val application: Application): AndroidViewModel(appl
         if (currentTrackPosition == -1) {
             currentTrackPosition = currentTrackListLength - 1
         }
-        val prevTrack = trackList.value!![currentTrackPosition]
+        val prevTrack = trackListLD.value!![currentTrackPosition]
         mediaPlayer = setupPlayer(prevTrack)
         startPlayer()
     }
